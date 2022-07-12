@@ -102,6 +102,63 @@ def get_AlfaMarket():
         writer.writerows(items)
 
 
-get_AlfaMarket()
+
+
+def get_MetroMart():
+    PageNum = 1
+
+    Names = []
+    Prices = []
+    while True:
+
+        print(PageNum)
+
+        html_text = requests.get(f"https://www.metro-markets.com/categoryl1/Commodities/15?page={PageNum}")
+
+        html_Content = html_text.content
+        soup = BeautifulSoup(html_Content, "html5lib")
+
+        pageLimit = soup.find("div", class_="result-holder").div.p.text
+
+        page_Limit = int(pageLimit.split()[0])
+        print(page_Limit)
+
+        if PageNum > (page_Limit // 12):
+            break
+        ItemProduct = soup.find_all("div", class_="product-card card")
+
+        ItemsNames = []
+        for i in ItemProduct:
+            ItemsNames.append(i.a.h5)
+
+        ItemsPrices = soup.find_all("p", class_="after")
+
+        for i in range(len(ItemsNames)):
+            if ItemsNames[i] != "":
+                Names.append(ItemsNames[i].text.replace('\n                            ', ''))
+                Prices.append(ItemsPrices[i].text)
+        PageNum += 1
+        print("Page switched !!")
+
+    items: List[List[Any]] = [[]]
+
+    for i in range(len(Names)):
+        if Names[i] != "":
+            items.append([Names[i], Prices[i]])
+
+    for i in items:
+        print(i)
+
+    fileList = ["Names", "Prices"]
+
+    with open('MetroMart.csv', 'w', encoding="utf-8", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(fileList)
+        writer.writerows(items)
+
+
+get_MetroMart()
+
+#get_AlfaMarket()
 
 #get_Jumia()
