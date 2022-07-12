@@ -47,4 +47,62 @@ def get_Jumia():
         writer.writerows(items)
 
 
-get_Jumia()
+def get_AlfaMarket():
+    PageNum = 1
+
+    Names = []
+    Prices = []
+
+    while True:
+
+        html_text = requests.get(
+            f"https://www.alfamarketeg.com/sheikhzayed_en/groceries?product_list_mode=grid&p={PageNum}")
+
+        html_Content = html_text.content
+        soup = BeautifulSoup(html_Content, "html5lib")
+
+        pageLimit = soup.find("div", id="am-page-count")
+
+        page_Limit = int(pageLimit.text.split()[0])
+        print(page_Limit)
+        print(PageNum)
+
+        if PageNum == page_Limit:
+            break
+        ItemsNamesProduct = soup.find_all("strong", class_="product name product-item-name")
+        ItemsPricesProducts = soup.find_all("li", class_="item product product-item")
+        ItemsPrices = []
+        ItemsNames = []
+        for i in ItemsPricesProducts:
+            ItemsPrices.append(i.find("span", class_="price").text)
+
+        for i in ItemsNamesProduct:
+            ItemsNames.append(i.a.text.replace("\n", ""))
+
+        for i in range(len(ItemsNames)):
+            Names.append(ItemsNames[i])
+            Prices.append(ItemsPrices[i])
+
+        PageNum += 1
+        print("Page switched !!")
+
+    items = [[]]
+
+    for i in range(len(Names)):
+        if Names[i] != "":
+            items.append([Names[i], Prices[i]])
+
+    fileList = ["Names", "Prices"]
+    print(len(items))
+    for i in items:
+        print(i)
+
+    with open('AlfaMarket.csv', 'w', encoding="utf-8", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(fileList)
+        writer.writerows(items)
+
+
+get_AlfaMarket()
+
+#get_Jumia()
