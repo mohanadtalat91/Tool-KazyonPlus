@@ -55,8 +55,7 @@ def get_AlfaMarket():
 
     while True:
 
-        html_text = requests.get(
-            f"https://www.alfamarketeg.com/sheikhzayed_en/groceries?product_list_mode=grid&p={PageNum}")
+        html_text = requests.get(f"https://www.alfamarketeg.com/sheikhzayed_en/groceries?product_list_mode=grid&p={PageNum}")
 
         html_Content = html_text.content
         soup = BeautifulSoup(html_Content, "html5lib")
