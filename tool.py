@@ -55,7 +55,8 @@ def get_AlfaMarket():
 
     while True:
 
-        html_text = requests.get(f"https://www.alfamarketeg.com/sheikhzayed_en/groceries?product_list_mode=grid&p={PageNum}")
+        html_text = requests.get(
+            f"https://www.alfamarketeg.com/sheikhzayed_en/groceries?product_list_mode=grid&p={PageNum}")
 
         html_Content = html_text.content
         soup = BeautifulSoup(html_Content, "html5lib")
@@ -100,8 +101,6 @@ def get_AlfaMarket():
         writer = csv.writer(file)
         writer.writerow(fileList)
         writer.writerows(items)
-
-
 
 
 def get_MetroMart():
@@ -159,6 +158,6 @@ def get_MetroMart():
 
 get_MetroMart()
 
-#get_AlfaMarket()
+get_AlfaMarket()
 
-#get_Jumia()
+get_Jumia()
