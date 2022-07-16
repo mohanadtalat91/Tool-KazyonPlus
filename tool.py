@@ -1,6 +1,7 @@
 import csv
 from typing import List, Any
 from bs4 import BeautifulSoup
+from tkinter import *
 import requests
 import xlsxwriter
 
@@ -197,10 +198,45 @@ def get_MetroMart():
         writer.writerows(items)
 
 
-get_MetroMart()
 
-get_AlfaMarket()
 
-get_Jumia()
 
-get_kheirZaman()
+
+
+screen=Tk()
+screen.geometry("500x450")
+screen.title('PythonGuides')
+screen.config(bg='#223441')
+screen.resizable(width=False, height=False)
+def newTask():
+    choice=lb.get(ANCHOR)
+    label = Label(screen, text="please wait", font=('Times', 18), bg='#223441', fg='white')
+    label.place(relx=0.38, rely=0.8)
+    if choice == 'MetroMart':
+        get_MetroMart()
+    elif choice == 'kheirZaman':
+        get_MetroMart()
+    elif choice == 'Jumia':
+        get_Jumia()
+    elif choice == 'AlfaMarket':
+        get_kheirZaman()
+
+
+
+
+lb = Listbox(screen,width=25,height=8,font=('Times', 18),bg='black',fg='white',selectbackground='#a6a6a6')
+lb.place(relx=0.2,rely=0.1)
+task_list = [
+    'MetroMart',
+    'kheirZaman',
+    'Jumia',
+    'AlfaMarket',
+    ]
+
+for item in task_list:
+    lb.insert(END, item)
+
+addTask_btn = Button(screen,text='View excell',font=('times 14'),bg='#c5f776',pady=10,command=newTask)
+addTask_btn.place(relx=0.4,rely=0.63)
+
+screen.mainloop()
