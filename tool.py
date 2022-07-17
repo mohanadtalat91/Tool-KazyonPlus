@@ -1,9 +1,8 @@
-import csv
-from typing import List, Any
 from bs4 import BeautifulSoup
 from tkinter import *
 import requests
 import xlsxwriter
+
 
 def get_kheirZaman():
     workbook = xlsxwriter.Workbook('kheirzaman.xlsx')
@@ -13,41 +12,41 @@ def get_kheirZaman():
     worksheet.write('A1', 'name..')
     worksheet.write('B1', 'price')
 
-
-
-    payload={}
+    payload = {}
     headers = {
-      'deviceId': 'l59exvuo9wduzj1nx24',
-      'Accept': 'application/json, text/plain, */*',
-      'Referer': 'https://www.kheirzaman.com/en/category/1/12/Groceries',
-      'Sec-Fetch-Dest': 'empty',
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
-      'content-language': 'en'
+        'deviceId': 'l59exvuo9wduzj1nx24',
+        'Accept': 'application/json, text/plain, */*',
+        'Referer': 'https://www.kheirzaman.com/en/category/1/12/Groceries',
+        'Sec-Fetch-Dest': 'empty',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
+        'content-language': 'en'
     }
 
-
-
-    row=0
+    row = 0
     worksheet.write(row, 0, "name")
     worksheet.write(row, 1, "price")
-    row+=1
-    for category_number in range(1,24):
-        url = "https://www.kheirzaman.com/portals/public/api/products/filter?categoryIds[0]="+str(category_number)+"&level=1"
+    row += 1
+    for category_number in range(1, 24):
+        url = "https://www.kheirzaman.com/portals/public/api/products/filter?categoryIds[0]=" + str(category_number) + "&level=1"
         response = requests.request("GET", url, headers=headers, data=payload)
-        pages=response.json()['data']['pagination']['totalPages']
+        pages = response.json()['data']['pagination']['totalPages']
+        print("Category number : ", category_number)
+        print("Number of pages : ", pages)
         for i in range(pages):
-            url = "https://www.kheirzaman.com/portals/public/api/products/filter?categoryIds[0]="+str(category_number)+"&level=1&page="+str(i)
+            print("page number : ", i)
+            url = "https://www.kheirzaman.com/portals/public/api/products/filter?categoryIds[0]=" + str(category_number) + "&level=1&page=" + str(i)
             response = requests.request("GET", url, headers=headers, data=payload)
-            products=len(response.json()['data']['products'])
+            products = len(response.json()['data']['products'])
             for j in range(products):
                 worksheet.write(row, 0, response.json()['data']['products'][j]['name'])
                 worksheet.write(row, 1, response.json()['data']['products'][j]['finalPrice'])
                 row += 1
-                print("product: ",response.json()['data']['products'][j]['name'])
-                print("price: ",response.json()['data']['products'][j]['finalPrice'])
+                # print("product: ", response.json()['data']['products'][j]['name'])
+                # print("price: ", response.json()['data']['products'][j]['finalPrice'])
         print("---------------------------------------------------------------------")
 
     workbook.close()
+
 
 def get_Jumia():
     PageNum = 1
@@ -62,8 +61,8 @@ def get_Jumia():
         html_Content = html_text.content
         soup = BeautifulSoup(html_Content, "html5lib")
 
-        pageLimit = soup.find("p", class_="-gy5 -phs").text
-        page_Limit = int(pageLimit.split()[0])
+        pageLimit = soup.find("p", class_="-gy5 -phs")
+        page_Limit = int(pageLimit.text.split()[0])
         print(page_Limit)
         print(PageNum)
         if PageNum > (page_Limit // 48):
@@ -77,18 +76,22 @@ def get_Jumia():
         PageNum += 1
         print("Page switched !!")
 
-    items = [[]]
+    fileList = ["Names", "Prices"]
+
+    workBook = xlsxwriter.Workbook("Jumia.xlsx")
+    workSheet = workBook.add_worksheet()
+
+    workSheet.write(0, 0, fileList[0])
+    workSheet.write(0, 1, fileList[1])
+    row = 2
 
     for i in range(len(Names)):
         if Names[i] != "":
-            items.append([Names[i], Prices[i]])
+            workSheet.write(row, 0, Names[i])
+            workSheet.write(row, 1, Prices[i])
+            row += 1
+    workBook.close()
 
-    fileList = ["Names", "Prices"]
-
-    with open('Jumia.csv', 'w', encoding="utf-8", newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(fileList)
-        writer.writerows(items)
 
 def get_AlfaMarket():
     PageNum = 1
@@ -129,21 +132,22 @@ def get_AlfaMarket():
         PageNum += 1
         print("Page switched !!")
 
-    items = [[]]
+    fileList = ["Names", "Prices"]
+
+    workBook = xlsxwriter.Workbook("AlfaMarket.xlsx")
+    workSheet = workBook.add_worksheet()
+
+    workSheet.write(0, 0, fileList[0])
+    workSheet.write(0, 1, fileList[1])
+    row = 2
 
     for i in range(len(Names)):
         if Names[i] != "":
-            items.append([Names[i], Prices[i]])
+            workSheet.write(row, 0, Names[i])
+            workSheet.write(row, 1, Prices[i])
+            row += 1
+    workBook.close()
 
-    fileList = ["Names", "Prices"]
-    print(len(items))
-    for i in items:
-        print(i)
-
-    with open('AlfaMarket.csv', 'w', encoding="utf-8", newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(fileList)
-        writer.writerows(items)
 
 def get_MetroMart():
     PageNum = 1
@@ -181,62 +185,59 @@ def get_MetroMart():
         PageNum += 1
         print("Page switched !!")
 
-    items: List[List[Any]] = [[]]
+    fileList = ["Names", "Prices"]
+
+    workBook = xlsxwriter.Workbook("MetroMart.xlsx")
+    workSheet = workBook.add_worksheet()
+
+    workSheet.write(0, 0, fileList[0])
+    workSheet.write(0, 1, fileList[1])
+    row = 2
 
     for i in range(len(Names)):
         if Names[i] != "":
-            items.append([Names[i], Prices[i]])
-
-    for i in items:
-        print(i)
-
-    fileList = ["Names", "Prices"]
-
-    with open('MetroMart.csv', 'w', encoding="utf-8", newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(fileList)
-        writer.writerows(items)
+            workSheet.write(row, 0, Names[i])
+            workSheet.write(row, 1, Prices[i])
+            row += 1
+    workBook.close()
 
 
-
-
-
-
-
-screen=Tk()
+screen = Tk()
 screen.geometry("500x450")
 screen.title('PythonGuides')
 screen.config(bg='#223441')
 screen.resizable(width=False, height=False)
+
+
 def newTask():
-    choice=lb.get(ANCHOR)
+    choice = lb.get(ANCHOR)
     label = Label(screen, text="please wait", font=('Times', 18), bg='#223441', fg='white')
     label.place(relx=0.38, rely=0.8)
     if choice == 'MetroMart':
         get_MetroMart()
     elif choice == 'kheirZaman':
-        get_MetroMart()
+        get_kheirZaman()
     elif choice == 'Jumia':
         get_Jumia()
     elif choice == 'AlfaMarket':
-        get_kheirZaman()
+        get_AlfaMarket()
 
 
-
-
-lb = Listbox(screen,width=25,height=8,font=('Times', 18),bg='black',fg='white',selectbackground='#a6a6a6')
-lb.place(relx=0.2,rely=0.1)
+lb = Listbox(screen, width=25, height=8, font=('Times', 18), bg='black', fg='white', selectbackground='#a6a6a6')
+lb.place(relx=0.2, rely=0.1)
 task_list = [
     'MetroMart',
     'kheirZaman',
     'Jumia',
     'AlfaMarket',
-    ]
+]
 
 for item in task_list:
     lb.insert(END, item)
 
-addTask_btn = Button(screen,text='View excell',font=('times 14'),bg='#c5f776',pady=10,command=newTask)
-addTask_btn.place(relx=0.4,rely=0.63)
+addTask_btn = Button(screen, text='View excell', font=('times 14'), bg='#c5f776', pady=10, command=newTask)
+addTask_btn.place(relx=0.4, rely=0.63)
 
 screen.mainloop()
+
+
