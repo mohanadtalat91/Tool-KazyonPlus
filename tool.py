@@ -202,6 +202,67 @@ def get_MetroMart():
     workBook.close()
 
 
+def getHyper(self):
+    payload = {}
+    items = [[]]
+    headers = {
+        'Accept': '/',
+        'Content-Type': 'application/json',
+        'Cookie': '_ga_VGXB4S2THQ=GS1.1.1657112536.3.1.1657118382.60; _hjAbsoluteSessionInProgress=0; _hjSession_2474687=eyJpZCI6IjMzMWYyNjE0LWU4YTYtNDA1ZC1iY2RhLWU5YWY2NWRkYzFjYSIsImNyZWF0ZWQiOjE2NTcxMTI1NDQxMDYsImluU2FtcGxlIjpmYWxzZX0=; PHPSESSID=4312513000c13eb01e4ac5162123dd48; _hjSessionUser_2474687=eyJpZCI6IjAzNjdhNmQ5LTQzMzMtNTk1MS05MWE2LWM1MzQ5ODU3YWUyNiIsImNyZWF0ZWQiOjE2NTcxMDMyMzcwNDAsImV4aXN0aW5nIjp0cnVlfQ==; _clck=ichuuk|1|f2x|0; _ga=GA1.1.1076591653.1657103233; _gcl_au=1.1.537592782.1657103233; private_content_version=c2287487b6319656dbe3c3e6372fdea8',
+        'Content-Language': 'en',
+        'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+        'Host': 'mcprod.hyperone.com.eg',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15',
+        'Referer': 'https://www.hyperone.com.eg/',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Store': 'default'
+    }
+
+    response = requests.request("GET", self, headers=headers, data=payload)
+    names = []
+    prices = []
+
+    pages = response.json()['data']['connection']['pageInfo']['totalPages']
+    for j in range(1, pages + 1):
+        response = requests.request("GET", self.replace('1', str(j), 1), headers=headers, data=payload)
+        for i in range(len(response.json()['data']['connection']['nodes'])):
+            names.append(response.json()['data']['connection']['nodes'][i]['name'])
+            prices.append(
+                response.json()['data']['connection']['nodes'][i]['price_range']['maximum_price']['final_price'][
+                    'value'])
+
+    for i in range(len(response.json()['data']['connection']['nodes'])):
+        print(names[i], "  ", prices[i])
+
+    for i in range(len(names)):
+        items.append([names[i], prices[i]])
+
+    fileList = ["Names", "Prices"]
+
+    workBook = xlsxwriter.Workbook("Hyper.xlsx")
+    workSheet = workBook.add_worksheet()
+
+    workSheet.write(0, 0, fileList[0])
+    workSheet.write(0, 1, fileList[1])
+    row = 2
+
+    file = open('HyperURLs.txt')
+
+    content = file.readlines()
+def getAllHyper():
+    file = open('HyperURLs.txt')
+
+    content = file.readlines()
+    for i in range(0, 35):
+        getHyper(content[i])
+    for i in range(len(Names)):
+        if Names[i] != "":
+            workSheet.write(row, 0, Names[i])
+            workSheet.write(row, 1, Prices[i])
+            row += 1
+    workBook.close()
+
 screen = Tk()
 screen.geometry("500x450")
 screen.title('PythonGuides')
@@ -221,6 +282,8 @@ def newTask():
         get_Jumia()
     elif choice == 'AlfaMarket':
         get_AlfaMarket()
+    elif choice=='Hyper':
+        getHyper()
 
 
 lb = Listbox(screen, width=25, height=8, font=('Times', 18), bg='black', fg='white', selectbackground='#a6a6a6')
@@ -230,6 +293,7 @@ task_list = [
     'kheirZaman',
     'Jumia',
     'AlfaMarket',
+    'Hyper',
 ]
 
 for item in task_list:
