@@ -255,6 +255,75 @@ def get_hyper():
     workBook.close()
 
 
+
+def get_carrefour():
+
+    fileList = ["Names", "Prices"]
+
+    workBook = xlsxwriter.Workbook("Carrefour.xlsx")
+    workSheet = workBook.add_worksheet()
+
+    workSheet.write(0, 0, fileList[0])
+    workSheet.write(0, 1, fileList[1])
+    row = 2
+
+    categories=['FEGY1600000',
+                'FEGY1700000',
+                'FEGY1500000',
+                'FEGY1000000',
+                'FEGY6000000',
+                'FEGY1200000',
+                'FEGY1610000',
+                'NFEGY2000000',
+                'NFEGY3000000'
+                ]
+    payload = {}
+    headers = {
+        'Accept': '*/*',
+        'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Host': 'www.carrefouregypt.com',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15',
+        'Referer': 'https://www.carrefouregypt.com/mafegy/en/c/NFEGY2300000',
+        'Connection': 'keep-alive',
+        'Cookie': 'cart_api=v2; _fbp=fb.1.1658050339677.665574664; _ga=GA1.2.419124956.1658050337; _gid=GA1.2.336108394.1658050337; _ga_BWW6C6N1ZH=GS1.1.1658050337.1.1.1658054899.0; RT="z=1&dm=www.carrefouregypt.com&si=0927b0e8-f0b6-483e-aedc-44c5fc5134ad&ss=l5p4cuta&sl=1c&tt=ae8t&obo=9&rl=1&ld=2pq72&r=3gc5ilad&ul=2pq73&hd=2pq74"; _gat_UA-125827987-3=1; _hjIncludedInPageviewSample=1; _hjIncludedInSessionSample=1; cto_bundle=BXCw018yamE0U1lEZHpHc3ZlbkM0dDhhUkV6ZWc5d2IlMkZneWdZT01NeFdpMHBtSzVTTXRuT0sxWVdtZ1VCWmlldUtvUDVSa3Y2VXJMWFVnTVVPcEU4d2c0ZXdKJTJCNFhaSDhoVWdiMWVtQ2dtdU12TFZ5QXJqOEo5aiUyQmRLYzk2R05ydGRMdA; _hjAbsoluteSessionInProgress=1; _hjSessionUser_2577697=eyJpZCI6IjQxZmRlZTk1LWE3MjItNWZlYS1iMzYzLTUyZTEwNzFlZDQ3YSIsImNyZWF0ZWQiOjE2NTgwNTAzMzkzMzYsImV4aXN0aW5nIjp0cnVlfQ==; _hjSession_2577697=eyJpZCI6IjZmOTExMjZiLWMxYzMtNDZkZi1hMzI5LWM0NjRiMzIxYzAzNCIsImNyZWF0ZWQiOjE2NTgwNTAzMzkzNDMsImluU2FtcGxlIjp0cnVlfQ==; cart_api=v2; bm_sv=815D50E8AD3994AAFE6C390EB9A776CD~YAAQT3tlXyoW0/SBAQAAlY3CCxBM7a8K5W0pNC1wkNy2IjoQiGYKB3j0d3hOWra015WEw+ne5jNCOoJg7U/3AI3pTECfFxj2ai/2tmeH6by/deflxgfiZC11BQoDJHf1gu1MM8TUiRyNIRiQvLp6L/VV2t2LZGmgeRBOXGeTtCs/4IFYyXi9bPypaL2UXHB4ypoC1pBA3rWphzjiALkb2yEEqIKRm1ATIZophD1QYeWatGkqTNY3BzfKyRTxIfxl2qdIMaHl9s1r~1; storeInfo=mafegy|en|EGP; _hjFirstSeen=1; __gads=ID=8a362e5488da6ae8-22cdc6a94bd400cd:T=1658050342:RT=1658054577:S=ALNI_Mb0KuwTIf7ndql8iiHc-TU6aA6MUA; AKA_A2=A; maf-cookie-banner-accepted=true; _sctr=1|1658008800000; __gpi=UID=00000a3f976baacc:T=1658050342:RT=1658050342:S=ALNI_Ma-tLPPLHs5zGo9dJ7l90TgEpPPjQ; _scid=134e15c7-5fbb-4531-a229-47fd071395a3; _gcl_au=1.1.1431116409.1658050337; maf-session-id=ef2753e1-7ecc-48dd-9f3c-dcc7076ba323; mafegy-preferred-delivery-area=Maadi - Cairo; prevAreaCode=Maadi - Cairo; ak_bmsc=13C95799D26658E2E6A2F9A468090C41~000000000000000000000000000000~YAAQHA4VAj8Oo/qBAQAA+xiACxCPW95ksfnJ2pC7BNRYquuD1UFSS58IjzcpsI/wP/Wkvx6fw6R4OZq7UKxXfxRhdDmftWF6ZOXEXzYeT3NehlgFdtwG9pAZc8imEboLnpnMdOazeqz9FPAqmQlx3+EBFTjdhkPc0or5QSUgk9U7PhMUyDgyWleUS7I2J+Eh7JEsb0OUkUd0TAeAUDcOT4RvgSheoApw8mWT3u9qo3WQrgljFWVc3/ZDJ6I73oGkS0uPwjmg/r8z9efdBTQpwFFrY1wrUSzyeTlnp/ms/RlbS7eAExq02hjki+U4dRvTyFQW3RVih/Ztd2bTypvm9h55cvgUA6w15xByh68HdyRQkiDQ6EBIUIgBFycst7Z4triRxkx9kggXUU0CYDbDUZ9XGIVRzjsQyxDIBupa6E9AYYJUJzVZXtUCRj0w1X/+IUMmf62Qa9Y115PDTMNexZL7S5EtIU+G5u72wQJWRfiR8GypZ+o/CFVSWwlWpP2IJohk; cart_api=v2',
+        'appid': 'Reactweb',
+        'tracestate': '3355720@nr=0-1-3355720-1021845705-4d43cf83960db091----1658054901052',
+        'storeid': 'mafegy',
+        'newrelic': 'eyJ2IjpbMCwxXSwiZCI6eyJ0eSI6IkJyb3dzZXIiLCJhYyI6IjMzNTU3MjAiLCJhcCI6IjEwMjE4NDU3MDUiLCJpZCI6IjRkNDNjZjgzOTYwZGIwOTEiLCJ0ciI6IjQ4MjFmYmRhZjdkZDU0ZWNkNDEzMTkxOWIzNzAxMzE5IiwidGkiOjE2NTgwNTQ5MDEwNTJ9fQ==',
+        'userid': 'undefined',
+        'credentials': 'include',
+        'token': 'undefined',
+        'deviceid': '419124956.1658050337',
+        'env': 'prod',
+        'traceparent': '00-4821fbdaf7dd54ecd4131919b3701319-4d43cf83960db091-01'
+    }
+
+    names = []
+    prices = []
+    totalproducts=0
+    for i in range(len(categories)):
+        url = f"https://www.carrefouregypt.com/api/v7/categories/{categories[i]}?filter=&sortBy=relevance&currentPage=1&pageSize=60&maxPrice=&minPrice=&areaCode=Maadi%20-%20Cairo&lang=en&displayCurr=EGP&latitude=29.967909028696003&longitude=31.266225954206813&nextOffset=0&requireSponsProducts=true&responseWithCatTree=true&depth=3"
+        response = requests.request("GET", url, headers=headers, data=payload)
+        pages = response.json()['pagination']['totalPages']
+
+        for j in range(pages):
+            url = f"https://www.carrefouregypt.com/api/v7/categories/{categories[i]}?filter=&sortBy=relevance&currentPage="+str(j)+"pageSize=60&maxPrice=&minPrice=&areaCode=Maadi%20-%20Cairo&lang=en&displayCurr=EGP&latitude=29.967909028696003&longitude=31.266225954206813&nextOffset=0&requireSponsProducts=true&responseWithCatTree=true&depth=3"
+            response = requests.request("GET", url, headers=headers, data=payload)
+            products = response.json()['products']
+            totalproducts=totalproducts+len(products)
+
+            for k in range(len(products)):
+                names.append(products[k]['name'])
+                prices.append(products[k]['price']['price'])
+
+    for m in range(totalproducts):
+        print(names[m], prices[m])
+        workSheet.write(row, 0, names[k])
+        workSheet.write(row, 1, prices[k])
+        row += 1
+    workBook.close()
+
 screen = Tk()
 screen.geometry("500x450")
 screen.title('PythonGuides')
@@ -276,6 +345,8 @@ def newTask():
         get_AlfaMarket()
     elif choice == 'Hyper':
         get_hyper()
+    elif choice == 'Carrefour':
+        get_carrefour()
 
 
 lb = Listbox(screen, width=25, height=8, font=('Times', 18), bg='black', fg='white', selectbackground='#a6a6a6')
@@ -286,6 +357,7 @@ task_list = [
     'Jumia',
     'AlfaMarket',
     'Hyper',
+    'Carrefour'
 ]
 
 for item in task_list:

@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5249bcb0-517a-4c9e-ac7d-e4ab8aefce7f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/HyperURLs.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Tool.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Tool.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="5249bcb0-517a-4c9e-ac7d-e4ab8aefce7f" name="Default Changelist" comment="Added Hyper">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tool.py" beforeDir="false" afterPath="$PROJECT_DIR$/tool.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +17,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -92,8 +93,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1657631153378</updated>
-      <workItem from="1658045210724" duration="1958000" />
+      <workItem from="1658045210724" duration="3945000" />
     </task>
+    <task id="LOCAL-00001" summary="Added Hyper">
+      <created>1658047247454</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1658047247454</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
 
@@ -131,5 +140,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added Hyper" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Hyper" />
   </component>
 </project>
