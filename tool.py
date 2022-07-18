@@ -27,14 +27,16 @@ def get_kheirZaman():
     worksheet.write(row, 1, "price")
     row += 1
     for category_number in range(1, 24):
-        url = "https://www.kheirzaman.com/portals/public/api/products/filter?categoryIds[0]=" + str(category_number) + "&level=1"
+        url = "https://www.kheirzaman.com/portals/public/api/products/filter?categoryIds[0]=" + str(
+            category_number) + "&level=1"
         response = requests.request("GET", url, headers=headers, data=payload)
         pages = response.json()['data']['pagination']['totalPages']
         print("Category number : ", category_number)
         print("Number of pages : ", pages)
         for i in range(pages):
             print("page number : ", i)
-            url = "https://www.kheirzaman.com/portals/public/api/products/filter?categoryIds[0]=" + str(category_number) + "&level=1&page=" + str(i)
+            url = "https://www.kheirzaman.com/portals/public/api/products/filter?categoryIds[0]=" + str(
+                category_number) + "&level=1&page=" + str(i)
             response = requests.request("GET", url, headers=headers, data=payload)
             products = len(response.json()['data']['products'])
             for j in range(products):
@@ -101,7 +103,8 @@ def get_AlfaMarket():
 
     while True:
 
-        html_text = requests.get(f"https://www.alfamarketeg.com/sheikhzayed_en/groceries?product_list_mode=grid&p={PageNum}")
+        html_text = requests.get(
+            f"https://www.alfamarketeg.com/sheikhzayed_en/groceries?product_list_mode=grid&p={PageNum}")
 
         html_Content = html_text.content
         soup = BeautifulSoup(html_Content, "html5lib")
@@ -244,7 +247,9 @@ def get_hyper():
             response = requests.request("GET", content[i].replace('1', str(j), 1), headers=headers, data=payload)
             for k in range(len(response.json()['data']['connection']['nodes'])):
                 names.append(response.json()['data']['connection']['nodes'][k]['name'])
-                prices.append(response.json()['data']['connection']['nodes'][k]['price_range']['maximum_price']['final_price']['value'])
+                prices.append(
+                    response.json()['data']['connection']['nodes'][k]['price_range']['maximum_price']['final_price'][
+                        'value'])
 
         for j in range(len(response.json()['data']['connection']['nodes'])):
             workSheet.write(row, 0, names[j])
@@ -255,9 +260,7 @@ def get_hyper():
     workBook.close()
 
 
-
 def get_carrefour():
-
     fileList = ["Names", "Prices"]
 
     workBook = xlsxwriter.Workbook("Carrefour.xlsx")
@@ -267,16 +270,16 @@ def get_carrefour():
     workSheet.write(0, 1, fileList[1])
     row = 2
 
-    categories=['FEGY1600000',
-                'FEGY1700000',
-                'FEGY1500000',
-                'FEGY1000000',
-                'FEGY6000000',
-                'FEGY1200000',
-                'FEGY1610000',
-                'NFEGY2000000',
-                'NFEGY3000000'
-                ]
+    categories = ['FEGY1600000',
+                  'FEGY1700000',
+                  'FEGY1500000',
+                  'FEGY1000000',
+                  'FEGY6000000',
+                  'FEGY1200000',
+                  'FEGY1610000',
+                  'NFEGY2000000',
+                  'NFEGY3000000'
+                  ]
     payload = {}
     headers = {
         'Accept': '*/*',
@@ -301,17 +304,22 @@ def get_carrefour():
 
     names = []
     prices = []
-    totalproducts=0
+    totalproducts = 0
+    print("the number of : category ", len(categories))
     for i in range(len(categories)):
+        print("category : " + str(i))
         url = f"https://www.carrefouregypt.com/api/v7/categories/{categories[i]}?filter=&sortBy=relevance&currentPage=1&pageSize=60&maxPrice=&minPrice=&areaCode=Maadi%20-%20Cairo&lang=en&displayCurr=EGP&latitude=29.967909028696003&longitude=31.266225954206813&nextOffset=0&requireSponsProducts=true&responseWithCatTree=true&depth=3"
         response = requests.request("GET", url, headers=headers, data=payload)
         pages = response.json()['pagination']['totalPages']
 
+        print("number of : pages ", pages)
         for j in range(pages):
-            url = f"https://www.carrefouregypt.com/api/v7/categories/{categories[i]}?filter=&sortBy=relevance&currentPage="+str(j)+"pageSize=60&maxPrice=&minPrice=&areaCode=Maadi%20-%20Cairo&lang=en&displayCurr=EGP&latitude=29.967909028696003&longitude=31.266225954206813&nextOffset=0&requireSponsProducts=true&responseWithCatTree=true&depth=3"
+            print("page " + str(j))
+            url = f"https://www.carrefouregypt.com/api/v7/categories/{categories[i]}?filter=&sortBy=relevance&currentPage=" + str(
+                j) + "pageSize=60&maxPrice=&minPrice=&areaCode=Maadi%20-%20Cairo&lang=en&displayCurr=EGP&latitude=29.967909028696003&longitude=31.266225954206813&nextOffset=0&requireSponsProducts=true&responseWithCatTree=true&depth=3"
             response = requests.request("GET", url, headers=headers, data=payload)
             products = response.json()['products']
-            totalproducts=totalproducts+len(products)
+            totalproducts = totalproducts + len(products)
 
             for k in range(len(products)):
                 names.append(products[k]['name'])
@@ -319,10 +327,11 @@ def get_carrefour():
 
     for m in range(totalproducts):
         print(names[m], prices[m])
-        workSheet.write(row, 0, names[k])
-        workSheet.write(row, 1, prices[k])
+        workSheet.write(row, 0, names[m])
+        workSheet.write(row, 1, prices[m])
         row += 1
     workBook.close()
+
 
 screen = Tk()
 screen.geometry("500x450")
