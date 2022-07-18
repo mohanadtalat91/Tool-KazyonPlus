@@ -335,7 +335,7 @@ def get_carrefour():
 
 screen = Tk()
 screen.geometry("500x450")
-screen.title('PythonGuides')
+screen.title('Tool')
 screen.config(bg='#223441')
 screen.resizable(width=False, height=False)
 
