@@ -26,7 +26,7 @@
   <li> 
   <strong><em>Navigate to repository directory
 </em></strong>
-    <blockquote>$ cd dist</blockquote>
+    <blockquote>$ cd Tool-KazyonPlus/dist</blockquote>
   </li>
   <li><strong><em>Run tool</em></strong>
        <blockquote>open tool.exe</blockquote>
