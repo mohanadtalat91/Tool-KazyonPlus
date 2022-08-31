@@ -261,16 +261,18 @@ def get_hyper():
 
 
 def get_carrefour():
-    fileList = ["Names", "Prices"]
+    fileList = ["Names", "Prices", "Category"]
 
     workBook = xlsxwriter.Workbook("Carrefour.xlsx")
     workSheet = workBook.add_worksheet()
 
     workSheet.write(0, 0, fileList[0])
     workSheet.write(0, 1, fileList[1])
+    workSheet.write(0, 2, fileList[2])
+
     row = 2
 
-    categories = ['FEGY1600000',
+    categoriesIDs = ['FEGY1600000',
                   'FEGY1700000',
                   'FEGY1500000',
                   'FEGY1000000',
@@ -280,6 +282,17 @@ def get_carrefour():
                   'NFEGY2000000',
                   'NFEGY3000000'
                   ]
+
+    categoriesNames = ['Fresh Food',
+                       'Food Cupboard',
+                       'Beverages',
+                       'Baby Products',
+                       'Frozen Food',
+                       'Bio & Organic Food',
+                       'Bakery & Pastry',
+                       'Beauty & Personal Care',
+                       'Cleaning & Household'
+                       ]
     payload = {}
     headers = {
         'Accept': '*/*',
@@ -304,18 +317,21 @@ def get_carrefour():
 
     names = []
     prices = []
+    categories = []
+
     totalproducts = 0
-    print("the number of : category ", len(categories))
-    for i in range(len(categories)):
+
+    print("the number of : category ", len(categoriesIDs))
+    for i in range(len(categoriesIDs)):
         print("category : " + str(i))
-        url = f"https://www.carrefouregypt.com/api/v7/categories/{categories[i]}?filter=&sortBy=relevance&currentPage=1&pageSize=60&maxPrice=&minPrice=&areaCode=Maadi%20-%20Cairo&lang=en&displayCurr=EGP&latitude=29.967909028696003&longitude=31.266225954206813&nextOffset=0&requireSponsProducts=true&responseWithCatTree=true&depth=3"
+        url = f"https://www.carrefouregypt.com/api/v7/categories/{categoriesIDs[i]}?filter=&sortBy=relevance&currentPage=1&pageSize=60&maxPrice=&minPrice=&areaCode=Maadi%20-%20Cairo&lang=en&displayCurr=EGP&latitude=29.967909028696003&longitude=31.266225954206813&nextOffset=0&requireSponsProducts=true&responseWithCatTree=true&depth=3"
         response = requests.request("GET", url, headers=headers, data=payload)
         pages = response.json()['pagination']['totalPages']
 
         print("number of : pages ", pages)
         for j in range(pages):
             print("page " + str(j))
-            url = f"https://www.carrefouregypt.com/api/v7/categories/{categories[i]}?filter=&sortBy=relevance&currentPage=" + str(
+            url = f"https://www.carrefouregypt.com/api/v7/categories/{categoriesIDs[i]}?filter=&sortBy=relevance&currentPage=" + str(
                 j) + "pageSize=60&maxPrice=&minPrice=&areaCode=Maadi%20-%20Cairo&lang=en&displayCurr=EGP&latitude=29.967909028696003&longitude=31.266225954206813&nextOffset=0&requireSponsProducts=true&responseWithCatTree=true&depth=3"
             response = requests.request("GET", url, headers=headers, data=payload)
             products = response.json()['products']
@@ -324,13 +340,88 @@ def get_carrefour():
             for k in range(len(products)):
                 names.append(products[k]['name'])
                 prices.append(products[k]['price']['price'])
+                categories.append(categoriesNames[i])
+                #print(products[k]['name'], products[k]['price']['price'], categoriesNames[i])
 
     for m in range(totalproducts):
-        print(names[m], prices[m])
+        print(names[m], prices[m], categories[m])
         workSheet.write(row, 0, names[m])
         workSheet.write(row, 1, prices[m])
+        workSheet.write(row, 2, categories[m])
         row += 1
     workBook.close()
+
+
+
+#
+# def get_Spinneys():
+#     fileList = ["Names", "Prices", "Category"]
+#
+#     workBook = xlsxwriter.Workbook("Spinneys.xlsx")
+#     workSheet = workBook.add_worksheet()
+#
+#     workSheet.write(0, 0, fileList[0])
+#     workSheet.write(0, 1, fileList[1])
+#     workSheet.write(0, 2, fileList[2])
+#
+#     row = 2
+#
+#     CategoriesName = ['bakery',
+#                       'fresh-food',
+#                       'food-cupboard',
+#                       'dairy-butter',
+#                       'chilled-frozen',
+#                       'beverage',
+#                       'sweets-snacks',
+#                       'beauty-personal-care1',
+#                       'cleaning',
+#                       'baby',
+#                       'home-garden',
+#                       'electronics-appliances'
+#                       ]
+#
+#     PageNum = 1
+#     Names = []
+#     Prices = []
+#     Categories = []
+#
+#     Cat = 1
+#
+#     while True:
+#
+#         print('PageNum :', PageNum)
+#         html_text = requests.get(f"https://spinneys-egypt.com/en/categories/{CategoriesName[Cat]}?locale=en&page={PageNum}#/")
+#
+#         html_Content = html_text.content
+#         soup = BeautifulSoup(html_Content, "html5lib")
+#
+#         pageLimit = soup.find("div", class_="view-icos-side d-flex").div
+#         print("page limit ", pageLimit)
+#         if pageLimit == "":
+#             break
+#         #page_Limit = int(pageLimit.text)
+#         print(pageLimit)
+#
+#         ItemsNames = soup.findAll("h2", class_="h4 text-capitalize mb-0")
+#         ItemsPrices = soup.findAll("div", class_="product-price")
+#
+#         for i in range(len(ItemsNames)):
+#             print(ItemsNames[i].text, ItemsPrices[i].span.text, CategoriesName[Cat])
+#
+#             Names.append(ItemsNames[i].text)
+#             Prices.append(ItemsPrices[i].text)
+#             Categories.append(CategoriesName[Cat])
+#         PageNum += 1
+#
+#     for i in range(len(Names)):
+#         if Names[i] != "":
+#             workSheet.write(row, 0, Names[i])
+#             workSheet.write(row, 1, Prices[i])
+#             workSheet.write(row, 2, Categories[i])
+#             row += 1
+#     workBook.close()
+#
+
 
 
 screen = Tk()
@@ -376,3 +467,4 @@ addTask_btn = Button(screen, text='View excell', font=('times 14'), bg='#c5f776'
 addTask_btn.place(relx=0.4, rely=0.63)
 
 screen.mainloop()
+
